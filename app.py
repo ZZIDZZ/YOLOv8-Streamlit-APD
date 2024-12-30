@@ -17,32 +17,32 @@ from utils import load_model, infer_uploaded_image, infer_uploaded_video, infer_
 
 # setting page layout
 st.set_page_config(
-    page_title="Interactive Interface for YOLOv8",
+    page_title="Deteksi Alat Pelindung Diri Konstruksi",
     page_icon="🤖",
     layout="wide",
     initial_sidebar_state="expanded"
     )
 
 # main page heading
-st.title("Interactive Interface for YOLOv8")
+st.title("Deteksi Alat Pelindung Diri Konstruksi")
 
 # sidebar
-st.sidebar.header("DL Model Config")
+st.sidebar.header("Konfigurasi Model")
 
 # model options
 task_type = st.sidebar.selectbox(
-    "Select Task",
-    ["Detection"]
+    "Task",
+    ["Deteksi"]
 )
 
 model_type = None
-if task_type == "Detection":
+if task_type == "Deteksi":
     model_type = st.sidebar.selectbox(
         "Select Model",
         config.DETECTION_MODEL_LIST
     )
 else:
-    st.error("Currently only 'Detection' function is implemented")
+    st.error("Saat ini hanya fungsi 'Deteksi' yang diimplementasikan")
 
 confidence = float(st.sidebar.slider(
     "Select Model Confidence", 30, 100, 50)) / 100
@@ -51,18 +51,18 @@ model_path = ""
 if model_type:
     model_path = Path(config.DETECTION_MODEL_DIR, str(model_type))
 else:
-    st.error("Please Select Model in Sidebar")
+    st.error("Pilih model terlebih dahulu")
 
 # load pretrained DL model
 try:
     model = load_model(model_path)
 except Exception as e:
-    st.error(f"Unable to load model. Please check the specified path: {model_path}")
+    st.error(f"Tidak dapat memuat model: {e}")
 
 # image/video options
-st.sidebar.header("Image/Video Config")
+st.sidebar.header("Konfigurasi Citra")
 source_selectbox = st.sidebar.selectbox(
-    "Select Source",
+    "Pilih Sumber",
     config.SOURCES_LIST
 )
 
@@ -74,4 +74,4 @@ elif source_selectbox == config.SOURCES_LIST[1]: # Video
 elif source_selectbox == config.SOURCES_LIST[2]: # Webcam
     infer_uploaded_webcam(confidence, model)
 else:
-    st.error("Currently only 'Image' and 'Video' source are implemented")
+    st.error("Saat ini hanya video, gambar, dan webcam yang diimplementasikan")

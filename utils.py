@@ -35,7 +35,7 @@ def _display_detected_frames(conf, model, st_frame, image):
     st_frame.image(res_plotted,
                    caption='Detected Video',
                    channels="BGR",
-                   use_column_width=True
+                   use_container_width=True
                    )
 
 
@@ -62,7 +62,7 @@ def infer_uploaded_image(conf, model):
     :return: None
     """
     source_img = st.sidebar.file_uploader(
-        label="Choose an image...",
+        label="Pilih Gambar...",
         type=("jpg", "jpeg", "png", 'bmp', 'webp')
     )
 
@@ -75,7 +75,7 @@ def infer_uploaded_image(conf, model):
             st.image(
                 image=source_img,
                 caption="Uploaded Image",
-                use_column_width=True
+                use_container_width=True
             )
 
     if source_img:
@@ -89,7 +89,7 @@ def infer_uploaded_image(conf, model):
                 with col2:
                     st.image(res_plotted,
                              caption="Detected Image",
-                             use_column_width=True)
+                             use_container_width=True)
                     try:
                         with st.expander("Detection Results"):
                             for box in boxes:
