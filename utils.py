@@ -13,6 +13,7 @@ import streamlit as st
 import cv2
 from PIL import Image
 import tempfile
+import yaml
 
 
 def _display_detected_frames(conf, model, st_frame, image):
@@ -56,7 +57,7 @@ def load_model(model_path):
 
 def infer_uploaded_image(conf, model):
     """
-    Execute inference for uploaded image
+    Execute inference for Citra Awal
     :param conf: Confidence of YOLOv8 model
     :param model: An instance of the `YOLOv8` class containing the YOLOv8 model.
     :return: None
@@ -71,10 +72,10 @@ def infer_uploaded_image(conf, model):
     with col1:
         if source_img:
             uploaded_image = Image.open(source_img)
-            # adding the uploaded image to the page with caption
+            # adding the Citra Awal to the page with caption
             st.image(
                 image=source_img,
-                caption="Uploaded Image",
+                caption="Citra Awal",
                 use_container_width=True
             )
 
@@ -88,12 +89,36 @@ def infer_uploaded_image(conf, model):
 
                 with col2:
                     st.image(res_plotted,
-                             caption="Detected Image",
+                             caption="Citra Terdeteksi",
                              use_container_width=True)
                     try:
-                        with st.expander("Detection Results"):
+                        with st.container():
+                            st.write("Detected Objects:")
+                            with open("COCO.yaml", "r") as file:
+                                data = yaml.safe_load(file)
+                                names = data["names"]
+                            # write summary of detected objects
+                            detected_summary = {}
+                            # loop through the detected boxes for detected summary
                             for box in boxes:
-                                st.write(box.xywh)
+                                # count each class detected to detected_summary dictionary
+                                detected_summary[names[box.cls.item()]] = detected_summary.get(names[box.cls.item()], 0) + 1
+
+                            [st.write(detected_summary_item) for detected_summary_item in detected_summary.items()]
+
+                            
+                            # for box in boxes:
+                            #     # get names from COCO.yaml, and use that from box.cls tensor value
+                            #     # read COCO.yaml file
+                            #     display_box = {
+                            #         "class": names[box.cls.item()],
+                            #         "confidence": box.conf,
+                            #         "box": box.xyxy
+                            #     }
+
+                            #     display_string = f"{display_box['class']} - {display_box['confidence'].item():.2f}"
+
+                            #     st.write(display_string)
                     except Exception as ex:
                         st.write("No image is uploaded yet!")
                         st.write(ex)
