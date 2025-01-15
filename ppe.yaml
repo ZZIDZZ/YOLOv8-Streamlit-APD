@@ -1,0 +1,17 @@
+names:
+- helmet
+- no-helmet
+- no-vest
+- person
+- vest
+nc: 5
+roboflow:
+  license: CC BY 4.0
+  project: construction-safety-gsnvb
+  url: https://universe.roboflow.com/roboflow-100/construction-safety-gsnvb/dataset/2
+  version: 2
+  workspace: roboflow-100
+test: test/images
+train: train/images
+# val: valid/images
+val: test/images

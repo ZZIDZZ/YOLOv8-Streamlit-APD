@@ -82,8 +82,7 @@ def infer_uploaded_image(conf, model):
     if source_img:
         if st.button("Execution"):
             with st.spinner("Running..."):
-                res = model.predict(uploaded_image,
-                                    conf=conf)
+                res = model.predict(uploaded_image, conf=conf)
                 boxes = res[0].boxes
                 res_plotted = res[0].plot()[:, :, ::-1]
 
@@ -91,37 +90,27 @@ def infer_uploaded_image(conf, model):
                     st.image(res_plotted,
                              caption="Citra Terdeteksi",
                              use_container_width=True)
+                    
                     try:
+                        # Display detected objects and their counts
                         with st.container():
-                            st.write("Detected Objects:")
-                            with open("COCO.yaml", "r") as file:
-                                data = yaml.safe_load(file)
-                                names = data["names"]
-                            # write summary of detected objects
-                            detected_summary = {}
-                            # loop through the detected boxes for detected summary
-                            for box in boxes:
-                                # count each class detected to detected_summary dictionary
-                                detected_summary[names[box.cls.item()]] = detected_summary.get(names[box.cls.item()], 0) + 1
-
-                            [st.write(detected_summary_item) for detected_summary_item in detected_summary.items()]
-
+                            st.write("Objek Terdeteksi:")
+                            detected_classes = [model.names[int(cls)] for cls in boxes.cls]
+                            class_counts = {cls: detected_classes.count(cls) for cls in set(detected_classes)}
                             
-                            # for box in boxes:
-                            #     # get names from COCO.yaml, and use that from box.cls tensor value
-                            #     # read COCO.yaml file
-                            #     display_box = {
-                            #         "class": names[box.cls.item()],
-                            #         "confidence": box.conf,
-                            #         "box": box.xyxy
-                            #     }
+                            for cls, count in class_counts.items():
+                                if("no-" not in cls):
+                                    st.write(f"{cls}: {count}")
 
-                            #     display_string = f"{display_box['class']} - {display_box['confidence'].item():.2f}"
-
-                            #     st.write(display_string)
+                            st.write(":red[Pelanggaran Terdeteksi:]")
+                            for cls, count in class_counts.items():
+                                if("no-" in cls):
+                                    st.write(f":red[{cls}: {count}]")
+                    
                     except Exception as ex:
                         st.write("No image is uploaded yet!")
                         st.write(ex)
+
 
 
 def infer_uploaded_video(conf, model):
