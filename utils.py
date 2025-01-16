@@ -293,6 +293,7 @@ def infer_uploaded_image_with_gradcam(conf, model, grad_cam):
                 # Model prediction
                 res = model.predict(img_tensor, conf=conf)
                 res_plotted = res[0].plot()[:, :, ::-1]
+                boxes = res[0].boxes
 
                 # Generate EigenCAM heatmap
                 try:
@@ -310,3 +311,22 @@ def infer_uploaded_image_with_gradcam(conf, model, grad_cam):
                     # st.image(res_plotted, caption="Citra Terdeteksi", use_container_width=True)
                     # if cam_image is not None:
                         # st.image(cam_image, caption="EigenCAM Overlay", use_container_width=True)
+                    try:
+                        # Display detected objects and their counts
+                        with st.container():
+                            st.write("Objek Terdeteksi:")
+                            detected_classes = [model.names[int(cls)] for cls in boxes.cls]
+                            class_counts = {cls: detected_classes.count(cls) for cls in set(detected_classes)}
+                            
+                            for cls, count in class_counts.items():
+                                if("no-" not in cls):
+                                    st.write(f"{cls}: {count}")
+
+                            st.write(":red[Pelanggaran Terdeteksi:]")
+                            for cls, count in class_counts.items():
+                                if("no-" in cls):
+                                    st.write(f":red[{cls}: {count}]")
+                    
+                    except Exception as ex:
+                        st.write("No image is uploaded yet!")
+                        st.write(ex)
