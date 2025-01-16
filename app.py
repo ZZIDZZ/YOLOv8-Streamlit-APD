@@ -13,18 +13,18 @@ from PIL import Image
 import streamlit as st
 
 import config
-from utils import load_model, infer_uploaded_image, infer_uploaded_video, infer_uploaded_webcam
+from utils import load_model, infer_uploaded_image, infer_uploaded_video, infer_uploaded_webcam, infer_uploaded_image_with_gradcam, load_model_with_eigencam
 
 # setting page layout
 st.set_page_config(
-    page_title="Deteksi Alat Pelindung Diri Konstruksi",
+    page_title="Deteksi Pelanggaran APD Konstruksi",
     page_icon="🤖",
     layout="wide",
     initial_sidebar_state="expanded"
     )
 
 # main page heading
-st.title("Deteksi Alat Pelindung Diri Konstruksi")
+st.title("Deteksi Pelanggaran APD Konstruksi")
 
 # sidebar
 st.sidebar.header("Konfigurasi Model")
@@ -73,5 +73,8 @@ elif source_selectbox == config.SOURCES_LIST[1]: # Video
     infer_uploaded_video(confidence, model)
 elif source_selectbox == config.SOURCES_LIST[2]: # Webcam
     infer_uploaded_webcam(confidence, model)
+elif source_selectbox == config.SOURCES_LIST[3]:
+    model, grad_cam  = load_model_with_eigencam(model_path)
+    infer_uploaded_image_with_gradcam(confidence, model, grad_cam) # Image with GradCAM
 else:
     st.error("Saat ini hanya video, gambar, dan webcam yang diimplementasikan")

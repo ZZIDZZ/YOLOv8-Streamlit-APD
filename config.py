@@ -26,7 +26,7 @@ ROOT = root_path.relative_to(Path.cwd())
 
 
 # Source
-SOURCES_LIST = ["Image", "Video", "Webcam"]
+SOURCES_LIST = ["Image", "Video", "Webcam", "Image with GradCAM"]
 
 
 # DL model config
